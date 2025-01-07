@@ -1,64 +1,10 @@
-upstream spring_backend {
-	      server localhost:8181; 
-      }
-      
-      upstream main_backend {
-	          server localhost:8282; 
-	  }
-	  
-	  limit_req_zone $binary_remote_addr zone=my_rate_limit:10m rate=1r/s; 
-	  limit_conn_zone $binary_remote_addr zone=conn_limit_per_ip:10m;  
-	  
-	  server {
-		  listen 80;
-	           server_name evisa.local www.evisa.local;
+server {
+    listen 8989;
+    server_name _;
 
-		   add_header X-Frame-Options "DENY"; 
-		   add_header X-Content-Type-Options "nosniff"; 
-		   add_header X-XSS-Protection "1; mode=block"; 
-		   add_header Referrer-Policy "strict-origin-when-cross-origin"; 
-		   add_header Content-Security-Policy "default-src 'self';"; 
-		   add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload";
-		   add_header Permissions-Policy "geolocation=(), microphone=(), camera=()"; 
-						      			       
-		   limit_req zone=my_rate_limit burst=5 nodelay;
+    index index.html;
 
-			limit_conn conn_limit_per_ip 10; 					      				         
-							     
-			access_log /var/log/nginx/evisa_access.log combined;
-			error_log /var/log/nginx/evisa_error.log warn;								      
-								         
-		    	autoindex off;
-			server_tokens off;
-									    
-
-			location /spring {
-											    
-				limit_req zone=my_rate_limit burst=5 nodelay;
-				limit_conn conn_limit_per_ip 5; 
-				proxy_pass http://spring_backend; 
-				proxy_set_header Host $host;
-				proxy_set_header X-Real-IP $remote_addr;
-				proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-				proxy_set_header X-Forwarded-Proto $scheme;
-			}
-																		      										location / {
-																													limit_req zone=my_rate_limit burst=5 nodelay;
-																													proxy_pass http://main_backend; 																						  proxy_set_header Host $host;
-						proxy_set_header X-Real-IP $remote_addr;
-						proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-						proxy_set_header X-Forwarded-Proto $scheme;
-					}																								      
-						
-					location ~ /\. {
-						deny all;																							      }
-					    																								      location ~ /\.git {																								      deny all;
-																																      }
-					    																											      location ~* \.(jpg|jpeg|png|gif|ico)$ {
-																																	          valid_referers none blocked evisa.local www.evisa.local;	
-																																		  if ($invalid_referer) {
-										    																									  return 403;
-				    																														 }
-																																	 }
-																								
-																																 }																		
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
