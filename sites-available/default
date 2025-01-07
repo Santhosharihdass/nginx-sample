@@ -1,10 +1,11 @@
 server {
-    listen 8989;
-    server_name _;
+        listen 8989 default_server;
+        listen [::]:8989 default_server;
 
-    index index.html;
+        index index.html;
 
-    location / {
-        try_files $uri $uri/ =404;
-    }
-}
+        server_name _;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
