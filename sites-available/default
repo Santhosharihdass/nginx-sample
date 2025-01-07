@@ -1,5 +1,5 @@
 server {
-          listen 8787;
+          listen 8888;
           server_name localhost;
 
           root /var/www/html;
@@ -8,7 +8,7 @@ server {
           location /{
 
                   limit_req_status 403;
-                  proxy_pass http://localhost:8989;
+                  proxy_pass http://localhost:8787;
                   proxy_set_header Host $host;
                   proxy_set_header X-Real-IP $remote_addr;
                   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
