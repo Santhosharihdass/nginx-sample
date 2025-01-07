@@ -1,11 +1,14 @@
 server {
           listen 8787;
-          server_name localhost	;
+          server_name localhost;
 
-          location /spring {
+          root /var/www/html;
+        index index.html;
+
+          location /{
 
                   limit_req_status 403;
-                  proxy_pass http://localhost:8787;
+                  proxy_pass http://localhost:8989;
                   proxy_set_header Host $host;
                   proxy_set_header X-Real-IP $remote_addr;
                   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
